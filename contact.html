@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Snapper</title>
+<meta name="description" content="Get in touch about Snapper — support, licensing, or feedback.">
+<link rel="canonical" href="https://snapper.nexis.io.vn/contact.html">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="assets/img/icon-256.png" alt="Snapper icon">
+      Snapper
+    </a>
+    <nav class="nav">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#download">Download</a>
+      <a href="guide.html">Guide</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <a class="btn ghost" href="index.html#download">Get Snapper</a>
+  </div>
+</header>
+
+<main class="guide-main">
+  <div class="wrap">
+    <h1>Contact</h1>
+    <p class="intro">Support, licensing questions, or feedback &mdash; send a message and it reaches us directly. You can also email <a href="mailto:support@snapper.nexis.io.vn">support@snapper.nexis.io.vn</a>.</p>
+
+    <form id="contact-form" class="contact-form" novalidate>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" maxlength="100" required autocomplete="name">
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" maxlength="200" required autocomplete="email">
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="6" maxlength="5000" required></textarea>
+
+      <!-- TODO: replace data-sitekey with your Turnstile site key -->
+      <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-callback="onTurnstile" data-expired-callback="onTurnstileExpired"></div>
+
+      <button type="submit" id="submit-btn" class="btn">Send message</button>
+      <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="assets/img/icon-256.png" alt="">
+      Snapper
+    </a>
+    <p>A local-first macOS screen capture utility &middot; <a href="https://snapper.nexis.io.vn">snapper.nexis.io.vn</a></p>
+    <p class="footer-links"><a href="index.html">Home</a> &middot; <a href="guide.html">Guide</a> &middot; <a href="contact.html">Contact</a> &middot; <a href="refund.html">Refund policy</a></p>
+    <p><small>Not affiliated with the Mac App Store. Bundle ID <code class="inline">vn.io.nexis.snapper</code>.</small></p>
+  </div>
+</footer>
+
+<script>
+  // TODO: set this to your deployed Worker URL
+  var CONTACT_ENDPOINT = "https://snapper-contact.YOUR-SUBDOMAIN.workers.dev";
+
+  var turnstileToken = "";
+  window.onTurnstile = function (token) { turnstileToken = token; };
+  window.onTurnstileExpired = function () { turnstileToken = ""; };
+
+  (function () {
+    var form = document.getElementById("contact-form");
+    var btn = document.getElementById("submit-btn");
+    var status = document.getElementById("form-status");
+    var submitting = false;
+
+    function setStatus(msg, kind) {
+      status.textContent = msg;
+      status.className = "form-status" + (kind ? " " + kind : "");
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (submitting) return;
+
+      if (!form.checkValidity()) {
+        setStatus("Please fill in every field with a valid value.", "error");
+        return;
+      }
+      if (!turnstileToken) {
+        setStatus("Please complete the captcha.", "error");
+        return;
+      }
+
+      submitting = true;
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+      setStatus("");
+
+      fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.value.trim(),
+          email: form.email.value.trim(),
+          message: form.message.value.trim(),
+          turnstileToken: turnstileToken
+        })
+      })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+        })
+        .then(function (r) {
+          if (r.ok && r.data.ok) {
+            form.reset();
+            setStatus("Thanks — your message has been sent.", "success");
+            btn.textContent = "Sent";
+            if (window.turnstile) window.turnstile.reset();
+            turnstileToken = "";
+          } else {
+            throw new Error((r.data && r.data.error) || "Something went wrong.");
+          }
+        })
+        .catch(function (err) {
+          setStatus(err.message + " You can also email support@snapper.nexis.io.vn.", "error");
+          btn.disabled = false;
+          btn.textContent = "Send message";
+          if (window.turnstile) window.turnstile.reset();
+          turnstileToken = "";
+        })
+        .finally(function () {
+          submitting = false;
+        });
+    });
+  })();
+</script>
+
+</body>
+</html>

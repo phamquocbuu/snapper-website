@@ -516,6 +516,68 @@ code.inline {
   color: var(--ink-soft);
 }
 
+/* Contact form */
+.contact-form {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 520px;
+}
+
+.contact-form label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 0.9rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  width: 100%;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--blue-bottom);
+  box-shadow: 0 0 0 3px rgba(10, 94, 230, 0.15);
+}
+
+.contact-form .cf-turnstile {
+  margin: 1rem 0 0.4rem;
+}
+
+.contact-form .btn {
+  justify-content: center;
+  margin-top: 0.6rem;
+}
+
+.contact-form .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-status {
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.form-status.error {
+  color: #c0263a;
+}
+
+.form-status.success {
+  color: #157a3e;
+}
+
 .faq dt {
   font-weight: 700;
   margin-top: 1.2rem;
