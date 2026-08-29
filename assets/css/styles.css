@@ -338,6 +338,194 @@ code.inline {
   font-size: 0.9em;
 }
 
+/* Pricing */
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+  align-items: start;
+}
+
+.tier {
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 2rem 1.8rem;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tier.featured {
+  border: 2px solid var(--blue-bottom);
+  position: relative;
+}
+
+.tier .ribbon {
+  position: absolute;
+  top: -0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--blue-top), var(--blue-bottom));
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+}
+
+.tier h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.tier .price {
+  margin: 0.2rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.tier .price .amount {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tier .price .per {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.tier .tier-note {
+  margin: 0 0 0.4rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.tier ul {
+  list-style: none;
+  margin: 0 0 1.2rem;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+  flex: 1;
+}
+
+.tier ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.tier ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--blue-top), var(--blue-bottom));
+}
+
+.tier .btn {
+  justify-content: center;
+}
+
+.pricing-foot {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+/* Download */
+.download-cta {
+  text-align: center;
+  margin: 0 0 3rem;
+}
+
+.download-cta .btn {
+  font-size: 1.15rem;
+  padding: 1rem 2rem;
+}
+
+.download-meta {
+  display: block;
+  margin-top: 0.8rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* Guide page */
+.guide-main {
+  padding-block: 3.5rem 5rem;
+}
+
+.guide-main .wrap {
+  width: min(760px, 100% - 3rem);
+}
+
+.guide-main h1 {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.guide-main .intro {
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  margin: 0 0 2.5rem;
+}
+
+.guide-main h2 {
+  font-size: 1.5rem;
+  margin: 2.8rem 0 0.8rem;
+  letter-spacing: -0.01em;
+}
+
+.guide-main h3 {
+  font-size: 1.1rem;
+  margin: 1.6rem 0 0.4rem;
+}
+
+.guide-main ol,
+.guide-main ul {
+  padding-left: 1.3rem;
+  margin: 0 0 1rem;
+}
+
+.guide-main li {
+  margin-bottom: 0.5rem;
+}
+
+.callout {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue-bottom);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.faq dt {
+  font-weight: 700;
+  margin-top: 1.2rem;
+}
+
+.faq dd {
+  margin: 0.3rem 0 0;
+  color: var(--ink-soft);
+}
+
 /* Footer */
 .site-footer {
   padding-block: 3rem;

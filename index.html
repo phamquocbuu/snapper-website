@@ -26,10 +26,11 @@
     </a>
     <nav class="nav">
       <a href="#features">Features</a>
-      <a href="#principles">Principles</a>
-      <a href="#install">Install</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#download">Download</a>
+      <a href="guide.html">Guide</a>
     </nav>
-    <a class="btn ghost" href="#install">Get Snapper</a>
+    <a class="btn ghost" href="#download">Get Snapper</a>
   </div>
 </header>
 
@@ -40,10 +41,10 @@
       <h1>Screen capture that keeps up with you</h1>
       <p class="lead">A local-first, native macOS capture and recording utility. Capture, preview, annotate, and drag out &mdash; without ever leaving the app you're in.</p>
       <div class="actions">
-        <a class="btn" href="#install">Install Snapper</a>
-        <a class="btn outline" href="#features">See what it does</a>
+        <a class="btn" href="#download">Download for macOS</a>
+        <a class="btn outline" href="#pricing">See pricing</a>
       </div>
-      <small>macOS 14.4+ &middot; Apple Silicon &middot; No cloud, no account, no telemetry</small>
+      <small>macOS 14.4+ &middot; Apple Silicon &middot; Free tier forever &middot; No cloud, no account, no telemetry</small>
     </div>
   </section>
 
@@ -115,32 +116,94 @@
     </div>
   </section>
 
-  <section class="block" id="install">
+  <section class="block" id="pricing">
     <div class="wrap">
       <div class="section-head">
-        <h2>Install Snapper</h2>
-        <p>Snapper is built and run locally &mdash; no App Store, no notarization. You'll need Xcode 16+ and macOS 14.4 or later on Apple Silicon.</p>
+        <h2>Pay once, it's yours</h2>
+        <p>Perpetual license plus paid updates &mdash; not a subscription. The app never stops working; the fee buys access to future updates.</p>
       </div>
+      <div class="pricing">
+        <article class="tier">
+          <h3>Free</h3>
+          <p class="price"><span class="amount">$0</span></p>
+          <p class="tier-note">Forever. No account, no nag.</p>
+          <ul>
+            <li>Region &amp; fullscreen capture</li>
+            <li>Quick Access panel &mdash; copy, save, drag out</li>
+            <li>Basic annotation &mdash; arrow, box, text, highlighter</li>
+            <li>PNG &amp; clipboard export</li>
+            <li>Recent history (last ~20)</li>
+          </ul>
+          <a class="btn ghost" href="#download">Download</a>
+        </article>
+
+        <article class="tier featured">
+          <div class="ribbon">Most popular</div>
+          <h3>Pro</h3>
+          <p class="price"><span class="amount">$19</span><span class="per">first purchase</span></p>
+          <p class="tier-note">The app forever + 12 months of updates. Renew for <strong>$10/year</strong> whenever you want &mdash; optional, and a lapsed license just freezes on its last entitled version.</p>
+          <ul>
+            <li>Everything in Free, plus:</li>
+            <li>Window capture, self-timer, scrolling capture</li>
+            <li>Screen recording &mdash; system &amp; mic audio, click &amp; keystroke overlays</li>
+            <li>Full annotation kit &mdash; blur / pixelate, step badges, crop, redaction</li>
+            <li>OCR (multi-language) &amp; beautify &amp; pin-to-screen</li>
+            <li>Unlimited history + non-destructive re-edit</li>
+            <li>HEIC / JPEG quality, custom naming &amp; save locations</li>
+          </ul>
+          <!-- TODO: replace href with the Paddle checkout link for the Pro (first purchase) price -->
+          <a class="btn js-buy" data-plan="pro" href="#">Buy Pro &mdash; $19</a>
+        </article>
+
+        <article class="tier">
+          <h3>Lifetime</h3>
+          <p class="price"><span class="amount">$59</span><span class="per">one time</span></p>
+          <p class="tier-note">All future updates, forever. No renewals.</p>
+          <ul>
+            <li>Every Pro feature</li>
+            <li>All future updates included</li>
+            <li>One license covers 3 of your own Macs</li>
+            <li>Free a seat any time from Settings &rarr; License</li>
+          </ul>
+          <!-- TODO: replace href with the Paddle checkout link for the Lifetime price -->
+          <a class="btn js-buy" data-plan="lifetime" href="#">Buy Lifetime &mdash; $59</a>
+        </article>
+      </div>
+      <p class="pricing-foot">Secure checkout and VAT handled by <strong>Paddle</strong>, our merchant of record. A 14-day full-feature trial is built into the app &mdash; no card required.</p>
+    </div>
+  </section>
+
+  <section class="block" id="download">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Download &amp; install</h2>
+        <p>macOS 14.4 or later, Apple Silicon. No terminal, no build step &mdash; just drag and drop.</p>
+      </div>
+      <p class="download-cta">
+        <!-- TODO: replace href with the Snapper .dmg download URL -->
+        <a class="btn js-download" href="#">Download Snapper (.dmg)</a>
+        <span class="download-meta">Free tier included &middot; Pro unlocked with your license key</span>
+      </p>
       <ol class="install-steps">
         <li>
-          <h3>Get the source</h3>
-          <p>Clone the Snapper repository to your Mac.</p>
+          <h3>Open the .dmg</h3>
+          <p>Double-click the downloaded <code class="inline">Snapper-x.x.x.dmg</code> to mount it.</p>
         </li>
         <li>
-          <h3>Build the Release app</h3>
-          <p><code class="inline">xcodebuild -project snapper.xcodeproj -scheme snapper -configuration Release build</code></p>
+          <h3>Drag to Applications</h3>
+          <p>Drag the <strong>Snapper</strong> icon onto the <strong>Applications</strong> folder in the same window, then eject the disk image.</p>
         </li>
         <li>
-          <h3>Move it to Applications</h3>
-          <p>Copy the built <code class="inline">snapper.app</code> from DerivedData into <code class="inline">/Applications</code>.</p>
+          <h3>Open Snapper</h3>
+          <p>Launch it from Applications or Spotlight. On first launch, click <strong>Open</strong> when macOS asks &mdash; this appears once.</p>
         </li>
         <li>
-          <h3>Launch &amp; grant permissions</h3>
-          <p>Open from Finder or Spotlight, then allow Screen Recording, Microphone, and Accessibility as prompted.</p>
+          <h3>Find it in the menu bar</h3>
+          <p>Snapper has no Dock icon. Click its menu bar icon (top-right) to capture, or to open <strong>Settings &rarr; License</strong> and activate Pro.</p>
         </li>
       </ol>
       <p style="text-align:center;margin-top:2.5rem">
-        <a class="btn" href="https://github.com/phamquocbuu/snapper">View on GitHub</a>
+        <a class="btn ghost" href="guide.html">Read the full guide</a>
       </p>
     </div>
   </section>
