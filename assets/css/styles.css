@@ -540,6 +540,15 @@ code.inline {
   color: var(--ink);
 }
 
+.footer-links {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.footer-links a {
+  color: var(--ink-soft);
+}
+
 @media (max-width: 640px) {
   .nav {
     display: none;
