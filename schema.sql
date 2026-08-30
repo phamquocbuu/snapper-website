@@ -3,7 +3,8 @@
 -- Apply locally:  npx wrangler d1 execute snapper-licenses --local  --file=schema.sql
 -- Apply remote:   npx wrangler d1 execute snapper-licenses --remote --file=schema.sql
 --
--- All three tables are safe to re-run (IF NOT EXISTS).
+-- All three tables are safe to re-run (IF NOT EXISTS). For an existing
+-- database, apply the incremental files under migrations/ instead.
 
 -- One row per issued license key.
 CREATE TABLE IF NOT EXISTS licenses (
@@ -13,8 +14,12 @@ CREATE TABLE IF NOT EXISTS licenses (
   seats                 INTEGER NOT NULL,       -- max concurrent activations
   paddle_customer_id    TEXT,
   paddle_transaction_id TEXT,
-  created_at            INTEGER NOT NULL        -- unix seconds
+  created_at            INTEGER NOT NULL,        -- unix seconds
+  emailed_at            INTEGER                 -- unix seconds the key email went out; NULL = not sent
 );
+
+CREATE INDEX IF NOT EXISTS idx_licenses_transaction
+  ON licenses (paddle_transaction_id);
 
 CREATE INDEX IF NOT EXISTS idx_licenses_customer
   ON licenses (paddle_customer_id);
