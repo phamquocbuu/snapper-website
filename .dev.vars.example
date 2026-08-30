@@ -31,3 +31,14 @@ PADDLE_WEBHOOK_SECRET=pdl_ntfset_...
 # Generate with: node scripts/gen-license-keypair.mjs
 # Production: npx wrangler pages secret put LICENSE_SIGNING_KEY
 LICENSE_SIGNING_KEY=
+
+# Resend, for emailing the license key to the buyer (free tier is plenty
+# for now). Verify the sending domain in Resend first. RESEND_FROM must be
+# an address on that domain. If either is unset the webhook still stores
+# the key and /thanks still shows it - only the email is skipped.
+RESEND_API_KEY=re_...
+RESEND_FROM=Snapper <snapper@nexis.io.vn>
+
+# PADDLE_API_KEY (above) is now REQUIRED, not optional: the webhook uses it
+# to look up the buyer's email, and /api/license-lookup uses it to verify
+# the transaction before revealing the key on /thanks.

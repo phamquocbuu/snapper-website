@@ -80,8 +80,13 @@ activate. Lives in `functions/api/` against a Cloudflare **D1** database
   `event_id`, and on `transaction.completed` writes a `licenses` row.
   Bands are pinned to the major at purchase (`snapper-pro` = `1.0 - 1.x`,
   `snapper-lifetime` = `1.0 - 999.x`); the renewal price widens an
-  existing key's upper major by one. Key delivery email is Paddle's
-  built-in — this handler does not send email.
+  existing key's upper major by one. It then looks up the buyer's email
+  via the Paddle API and sends the key with **Resend** (best-effort —
+  failure leaves `emailed_at` NULL and the key is still retrievable).
+- `license-lookup.js` — `GET /api/license-lookup?txn=…` verifies the
+  transaction with Paddle and returns the key; `/thanks` calls this with
+  the `_ptxn` param Paddle adds to the success URL, so the buyer sees the
+  key on-screen even if the email is slow or lost.
 - `activate.js` — `POST /api/activate {key, machine}` → looks up the key,
   enforces `seats`, and returns `{ receipt }`: a `base64url(payload).base64url(sig)`
   string signed with the server's Ed25519 key and verified against the
@@ -99,6 +104,17 @@ npx wrangler d1 execute snapper-licenses --local  --file=schema.sql   # for page
 node scripts/gen-license-keypair.mjs               # prints the private + public keys
 npx wrangler pages secret put LICENSE_SIGNING_KEY  # the base64 PKCS#8 private key
 npx wrangler pages secret put PADDLE_WEBHOOK_SECRET # pdl_ntfset_... for the destination
+npx wrangler pages secret put PADDLE_API_KEY        # pdl_live_... (email lookup + txn verify)
+npx wrangler pages secret put RESEND_API_KEY        # re_...
+# RESEND_FROM is a plain var, e.g. "Snapper <snapper@nexis.io.vn>"
+```
+
+Verify the sending domain in Resend (3 DNS records) before the email will
+send. Applying the `emailed_at` column to an existing DB:
+
+```sh
+npx wrangler d1 execute snapper-licenses --remote \
+  --file=migrations/2026-08-30_16-30-00_add-emailed-at.sql
 ```
 
 Add the `LICENSE_DB` D1 binding under Pages project → Settings → Bindings
