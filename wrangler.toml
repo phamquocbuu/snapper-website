@@ -18,3 +18,9 @@ compatibility_date = "2024-11-01"
 binding = "LICENSE_DB"
 database_name = "snapper-licenses"
 database_id = "1908046c-ddf2-4c9b-85ed-38889669dde5"
+
+# preview builds (PRs / non-main branches)
+[[env.preview.d1_databases]]
+binding = "LICENSE_DB"
+database_name = "dev_snapper_licenses"
+database_id = "a4c939a9-9109-467b-846f-0f9457a5f5f0"
