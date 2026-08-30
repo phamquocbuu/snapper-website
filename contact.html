@@ -33,7 +33,7 @@
 <main class="guide-main">
   <div class="wrap">
     <h1>Contact</h1>
-    <p class="intro">Support, licensing questions, or feedback &mdash; send a message and it reaches us directly. You can also email <a href="mailto:support@snapper.nexis.io.vn">support@snapper.nexis.io.vn</a>.</p>
+    <p class="intro">Support, licensing questions, or feedback &mdash; send a message and it reaches us directly. You can also email <a href="mailto:snapper@nexis.io.vn">snapper@nexis.io.vn</a>.</p>
 
     <form id="contact-form" class="contact-form" novalidate>
       <label for="name">Name</label>
@@ -129,7 +129,7 @@
           }
         })
         .catch(function (err) {
-          setStatus(err.message + " You can also email support@snapper.nexis.io.vn.", "error");
+          setStatus(err.message + " You can also email snapper@nexis.io.vn.", "error");
           btn.disabled = false;
           btn.textContent = "Send message";
           if (window.turnstile) window.turnstile.reset();

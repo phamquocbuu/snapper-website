@@ -141,7 +141,7 @@
       event.name === "checkout.payment-error"
     ) {
       showNotice(
-        "Something went wrong with checkout. Please try again, or email support@snapper.nexis.io.vn.",
+        "Something went wrong with checkout. Please try again, or email snapper@nexis.io.vn.",
       );
     }
   }
