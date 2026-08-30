@@ -36,7 +36,17 @@
     <p class="intro">Paddle has taken payment and emailed your receipt.</p>
 
     <h2>Your license key</h2>
-    <p>Your Snapper license key is being sent to the email address you used at checkout. It usually arrives within a few minutes &mdash; check your spam folder if you don&rsquo;t see it.</p>
+    <div id="license-box" data-state="idle">
+      <p id="license-idle">Your Snapper license key is being sent to the email address you used at checkout. It usually arrives within a few minutes &mdash; check your spam folder if you don&rsquo;t see it.</p>
+      <p id="license-loading" hidden>Fetching your license key&hellip;</p>
+      <div id="license-ready" hidden>
+        <p>Here is your license key (also emailed to you):</p>
+        <p><code class="inline" id="license-key" style="font-size:1.15rem;user-select:all"></code></p>
+        <p id="license-band" style="color:var(--muted,#666)"></p>
+      </div>
+      <p id="license-pending" hidden>Payment confirmed. Your key is being generated &mdash; it will arrive by email within a minute.</p>
+      <p id="license-error" hidden>We couldn&rsquo;t show your key here, but it is on its way by email. Contact <a href="mailto:snapper@nexis.io.vn">snapper@nexis.io.vn</a> if it doesn&rsquo;t arrive.</p>
+    </div>
 
     <h2>Activate Pro</h2>
     <ol>
@@ -64,5 +74,6 @@
   </div>
 </footer>
 
+<script src="assets/js/thanks.js"></script>
 </body>
 </html>
