@@ -438,6 +438,21 @@ code.inline {
   justify-content: center;
 }
 
+.checkout-notice {
+  text-align: center;
+  margin: 2rem auto 0;
+  max-width: 40rem;
+  color: #c0263a;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.btn.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .pricing-foot {
   text-align: center;
   margin-top: 2rem;

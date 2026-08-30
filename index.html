@@ -141,8 +141,8 @@
         <article class="tier featured">
           <div class="ribbon">Most popular</div>
           <h3>Pro</h3>
-          <p class="price"><span class="amount">$19</span><span class="per">first purchase</span></p>
-          <p class="tier-note">The app forever + 12 months of updates. Renew for <strong>$10/year</strong> whenever you want &mdash; optional, and a lapsed license just freezes on its last entitled version.</p>
+          <p class="price"><span class="amount" data-paddle-total="proFirst" data-fallback="$19">$19</span><span class="per">first purchase</span></p>
+          <p class="tier-note">The app forever + 12 months of updates. Renew for <strong data-paddle-total="proRenewal" data-fallback="$10">$10</strong>/year whenever you want &mdash; optional, and a lapsed license just freezes on its last entitled version.</p>
           <ul>
             <li>Everything in Free, plus:</li>
             <li>Window capture, self-timer, scrolling capture</li>
@@ -152,13 +152,12 @@
             <li>Unlimited history + non-destructive re-edit</li>
             <li>HEIC / JPEG quality, custom naming &amp; save locations</li>
           </ul>
-          <!-- TODO: replace href with the Paddle checkout link for the Pro (first purchase) price -->
-          <a class="btn js-buy" data-plan="pro" href="#">Buy Pro &mdash; $19</a>
+          <a class="btn js-buy" data-plan="pro" data-paddle-label="pro" href="#">Buy Pro &mdash; $19</a>
         </article>
 
         <article class="tier">
           <h3>Lifetime</h3>
-          <p class="price"><span class="amount">$59</span><span class="per">one time</span></p>
+          <p class="price"><span class="amount" data-paddle-total="lifetime" data-fallback="$59">$59</span><span class="per">one time</span></p>
           <p class="tier-note">All future updates, forever. No renewals.</p>
           <ul>
             <li>Every Pro feature</li>
@@ -166,10 +165,10 @@
             <li>One license covers 3 of your own Macs</li>
             <li>Free a seat any time from Settings &rarr; License</li>
           </ul>
-          <!-- TODO: replace href with the Paddle checkout link for the Lifetime price -->
-          <a class="btn js-buy" data-plan="lifetime" href="#">Buy Lifetime &mdash; $59</a>
+          <a class="btn js-buy" data-plan="lifetime" data-paddle-label="lifetime" href="#">Buy Lifetime &mdash; $59</a>
         </article>
       </div>
+      <p class="checkout-notice" data-checkout-notice hidden></p>
       <p class="pricing-foot">Secure checkout and VAT handled by <strong>Paddle</strong>, our merchant of record. A 14-day full-feature trial is built into the app &mdash; no card required.</p>
     </div>
   </section>
@@ -209,6 +208,8 @@
     </div>
   </section>
 </main>
+
+<script src="assets/js/checkout.js" defer></script>
 
 <footer class="site-footer">
   <div class="wrap">

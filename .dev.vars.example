@@ -1,0 +1,21 @@
+# Local vars for `npx wrangler pages dev .` (copy to .dev.vars, which is git-ignored).
+# In production these are set under Pages project -> Settings -> Variables and Secrets.
+
+# Which Paddle account to talk to. Required. No default - the checkout
+# function returns HTTP 500 if this is unset or not exactly one of these.
+PADDLE_ENVIRONMENT=sandbox
+
+# Public Paddle.js client-side token (test_... in sandbox, live_... in production).
+# Safe to expose to the browser. Paddle > Developer tools > Authentication.
+PADDLE_CLIENT_TOKEN=test_9b2434436dc43ba00d28fba019b
+
+# Catalog price IDs (sandbox). Re-seed with claude-docs/seed-paddle-catalog.mjs
+# in the app repo for production IDs.
+PADDLE_PRICE_PRO_FIRST=pri_01m18c0ef5q3qb397k38bwzrqk
+PADDLE_PRICE_PRO_RENEWAL=pri_01m18c0esr3w0ezxsv1jmhbgvw
+PADDLE_PRICE_LIFETIME=pri_01m18c0fg625fpqr61sgt071k0
+
+# Secret server-side API key. Only consumed once customer pre-fill is wired
+# to real web auth; the current stub never signs anyone in. Never exposed
+# to the client. pdl_sdbx_... in sandbox, pdl_live_... in production.
+# PADDLE_API_KEY=
