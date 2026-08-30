@@ -19,3 +19,15 @@ PADDLE_PRICE_LIFETIME=pri_01m18c0fg625fpqr61sgt071k0
 # to real web auth; the current stub never signs anyone in. Never exposed
 # to the client. pdl_sdbx_... in sandbox, pdl_live_... in production.
 # PADDLE_API_KEY=
+
+# --- License backend (functions/api/paddle-webhook.js, activate.js,
+#     deactivate.js; D1 binding LICENSE_DB from wrangler.toml) ---
+
+# This notification destination's secret. Paddle > Developer tools >
+# Notifications > your destination. NOT the same as PADDLE_API_KEY.
+PADDLE_WEBHOOK_SECRET=pdl_ntfset_...
+
+# base64 PKCS#8 Ed25519 private key that signs activation receipts.
+# Generate with: node scripts/gen-license-keypair.mjs
+# Production: npx wrangler pages secret put LICENSE_SIGNING_KEY
+LICENSE_SIGNING_KEY=

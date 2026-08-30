@@ -68,8 +68,44 @@ as merchant of record:
   `PricePreview` (`formattedTotals` verbatim — no client-side math), and
   opens the overlay checkout on the Buy buttons. Successful payment
   redirects to `/thanks`.
-- Provisioning (turning a payment into a license key) is **not** here —
-  that belongs in a Paddle webhook handler, added later.
+- Provisioning is handled by the **license backend** below.
+
+## License backend
+
+Turns a completed Paddle transaction into a license key the app can
+activate. Lives in `functions/api/` against a Cloudflare **D1** database
+(`schema.sql`, binding `LICENSE_DB`).
+
+- `paddle-webhook.js` — verifies the `Paddle-Signature` HMAC, dedupes on
+  `event_id`, and on `transaction.completed` writes a `licenses` row.
+  Bands are pinned to the major at purchase (`snapper-pro` = `1.0 - 1.x`,
+  `snapper-lifetime` = `1.0 - 999.x`); the renewal price widens an
+  existing key's upper major by one. Key delivery email is Paddle's
+  built-in — this handler does not send email.
+- `activate.js` — `POST /api/activate {key, machine}` → looks up the key,
+  enforces `seats`, and returns `{ receipt }`: a `base64url(payload).base64url(sig)`
+  string signed with the server's Ed25519 key and verified against the
+  key compiled into the app. `404` unknown key, `409` seat limit.
+- `deactivate.js` — `POST /api/deactivate {key, machine}` frees the seat;
+  always `200`.
+
+### Setup
+
+```sh
+npx wrangler d1 create snapper-licenses            # paste id into wrangler.toml
+npx wrangler d1 execute snapper-licenses --remote --file=schema.sql
+npx wrangler d1 execute snapper-licenses --local  --file=schema.sql   # for pages dev
+
+node scripts/gen-license-keypair.mjs               # prints the private + public keys
+npx wrangler pages secret put LICENSE_SIGNING_KEY  # the base64 PKCS#8 private key
+npx wrangler pages secret put PADDLE_WEBHOOK_SECRET # pdl_ntfset_... for the destination
+```
+
+Add the `LICENSE_DB` D1 binding under Pages project → Settings → Bindings
+(git-connected builds read the dashboard, not `wrangler.toml`). Point a
+Paddle notification destination (`transaction.completed`) at
+`https://snapper.nexis.io.vn/api/paddle-webhook`. Compile the printed raw
+32-byte public key into the app (`LicenseConfiguration.Obfuscated`).
 
 ### Catalog
 
