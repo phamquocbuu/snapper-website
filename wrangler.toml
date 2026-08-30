@@ -1,0 +1,20 @@
+# Cloudflare Pages project config.
+#
+# The site itself is static (output = repo root, no build step). This file
+# exists so `npx wrangler pages dev .` and the git-connected Pages build
+# both see the D1 binding that the license Pages Functions
+# (functions/api/paddle-webhook.js, activate.js, deactivate.js) depend on.
+#
+# After `wrangler d1 create snapper-licenses`, paste the returned
+# database_id below and also add the same binding under the Pages project
+# -> Settings -> Bindings in the dashboard (git-connected builds read the
+# dashboard binding, not this file).
+
+name = "snapper-website"
+pages_build_output_dir = "."
+compatibility_date = "2024-11-01"
+
+[[d1_databases]]
+binding = "LICENSE_DB"
+database_name = "snapper-licenses"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
