@@ -15,6 +15,6 @@ pages_build_output_dir = "."
 compatibility_date = "2024-11-01"
 
 [[d1_databases]]
-binding = "snapper_licenses"
+binding = "LICENSE_DB"
 database_name = "snapper-licenses"
 database_id = "1908046c-ddf2-4c9b-85ed-38889669dde5"
