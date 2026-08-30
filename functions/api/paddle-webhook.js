@@ -26,7 +26,13 @@
  *   PADDLE_PRICE_PRO_FIRST / PADDLE_PRICE_PRO_RENEWAL / PADDLE_PRICE_LIFETIME
  */
 
-import { json, nowSeconds, entitlementForPrice, widenBand } from "./_lib/license.js";
+import {
+  json,
+  nowSeconds,
+  paddleApiBase,
+  entitlementForPrice,
+  widenBand,
+} from "./_lib/license.js";
 
 /** Constant-time-ish hex compare. */
 function timingSafeEqualHex(a, b) {
@@ -97,6 +103,7 @@ async function provisionTransaction(db, txn, env) {
   const transactionId = txn.id ?? null;
   const suppliedKey = txn.custom_data?.license_key ?? null;
   const items = Array.isArray(txn.items) ? txn.items : [];
+  const issued = [];
 
   for (const item of items) {
     const priceId = item?.price?.id;
@@ -123,7 +130,14 @@ async function provisionTransaction(db, txn, env) {
       continue;
     }
 
-    const key = suppliedKey || generateKey();
+    // Reuse an already-issued key for this transaction so a webhook retry
+    // never mints a second key.
+    const prior = await db
+      .prepare("SELECT key FROM licenses WHERE paddle_transaction_id = ? LIMIT 1")
+      .bind(transactionId)
+      .first();
+    const key = prior?.key || suppliedKey || generateKey();
+
     await db
       .prepare(
         `INSERT OR IGNORE INTO licenses
@@ -141,6 +155,99 @@ async function provisionTransaction(db, txn, env) {
         nowSeconds(),
       )
       .run();
+
+    issued.push(key);
+  }
+
+  return { customerId, issued };
+}
+
+/** Look up the buyer's email via the Paddle API. Returns null on any failure. */
+async function fetchCustomerEmail(customerId, env) {
+  if (!customerId || !env.PADDLE_API_KEY) return null;
+  try {
+    const res = await fetch(`${paddleApiBase(env)}/customers/${customerId}`, {
+      headers: { Authorization: `Bearer ${env.PADDLE_API_KEY}` },
+    });
+    if (!res.ok) return null;
+    return (await res.json()).data?.email ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Send one license key via Resend. Returns true on a 2xx. */
+async function sendKeyEmail(email, license, env) {
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM) return false;
+
+  const productName =
+    license.product === "snapper-lifetime" ? "Snapper Lifetime" : "Snapper Pro";
+  const subject = `Your ${productName} license key`;
+  const text =
+    `Thanks for buying ${productName}.\n\n` +
+    `License key: ${license.key}\n` +
+    `Updates through: ${license.entitled_versions}\n\n` +
+    `Activate in Snapper: Settings > License > paste the key > Activate.\n` +
+    `Need help? Reply to this email or contact snapper@nexis.io.vn.`;
+  const html =
+    `<p>Thanks for buying <strong>${productName}</strong>.</p>` +
+    `<p style="font-size:1.1rem"><strong>License key:</strong> ` +
+    `<code>${license.key}</code></p>` +
+    `<p>Updates through: ${license.entitled_versions}</p>` +
+    `<p>Activate in Snapper: <strong>Settings &rarr; License</strong>, paste the key, click Activate.</p>` +
+    `<p>Need help? Reply to this email or contact ` +
+    `<a href="mailto:snapper@nexis.io.vn">snapper@nexis.io.vn</a>.</p>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: env.RESEND_FROM, to: [email], subject, text, html }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Email each newly issued key whose row still has emailed_at IS NULL.
+ * Best-effort: a failure here never fails the webhook (the buyer can still
+ * retrieve the key on /thanks, and emailed_at stays NULL for follow-up).
+ */
+async function deliverKeys(db, env, { customerId, issued }) {
+  if (issued.length === 0) return;
+
+  const pending = [];
+  for (const key of issued) {
+    const row = await db
+      .prepare(
+        "SELECT key, product, entitled_versions FROM licenses WHERE key = ? AND emailed_at IS NULL",
+      )
+      .bind(key)
+      .first();
+    if (row) pending.push(row);
+  }
+  if (pending.length === 0) return;
+
+  const email = await fetchCustomerEmail(customerId, env);
+  if (!email) {
+    console.error("license email skipped: no address for customer", customerId);
+    return;
+  }
+
+  for (const row of pending) {
+    if (await sendKeyEmail(email, row, env)) {
+      await db
+        .prepare("UPDATE licenses SET emailed_at = ? WHERE key = ?")
+        .bind(nowSeconds(), row.key)
+        .run();
+    } else {
+      console.error("license email failed for key", row.key);
+    }
   }
 }
 
@@ -165,7 +272,8 @@ export async function onRequestPost({ request, env }) {
 
     try {
       if (event.event_type === "transaction.completed") {
-        await provisionTransaction(env.LICENSE_DB, event.data, env);
+        const result = await provisionTransaction(env.LICENSE_DB, event.data, env);
+        await deliverKeys(env.LICENSE_DB, env, result);
       }
     } catch (err) {
       // Release the claim so the retry re-processes instead of being deduped.

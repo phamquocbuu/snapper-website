@@ -23,6 +23,13 @@ export function nowSeconds() {
   return Math.floor(Date.now() / 1000);
 }
 
+/** Paddle REST base for the configured environment (defaults to sandbox). */
+export function paddleApiBase(env) {
+  return env.PADDLE_ENVIRONMENT === "production"
+    ? "https://api.paddle.com"
+    : "https://sandbox-api.paddle.com";
+}
+
 // --- base64 / base64url -----------------------------------------------------
 
 export function bytesToBase64(bytes) {
